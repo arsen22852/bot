@@ -32,10 +32,9 @@ io.on('connection', (socket) => {
     });
   });
 
-  socket.on('getParticipants', () => {
-    socket.emit('participants', bot.participants.size);
-  });
-
+  const PORT = process.env.PORT || 3000;
+server.listen(PORT, '0.0.0.0', () => {
+    console.log(`Server is running on port ${PORT}`);
 });
 
 server.listen(3000, () => {
