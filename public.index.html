@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Giveaway Bot</title>
+  <style>
+    body {
+      background: #0e0e10;
+      color: white;
+      font-family: sans-serif;
+      text-align: center;
+    }
+
+    button {
+      background: #9146FF;
+      border: none;
+      padding: 10px 20px;
+      margin: 10px;
+      color: white;
+      cursor: pointer;
+      border-radius: 10px;
+    }
+
+    .card {
+      background: #1f1f23;
+      padding: 20px;
+      border-radius: 15px;
+      margin-top: 20px;
+      display: inline-block;
+    }
+  </style>
+</head>
+<body>
+
+<h1>🎁 Giveaway</h1>
+
+<input id="keyword" placeholder="ключевое слово (+)">
+<br>
+
+<button onclick="start()">Старт</button>
+<button onclick="stop()">Стоп</button>
+<button onclick="pick()">Выбрать победителя</button>
+
+<div class="card">
+  <h2>Участников: <span id="count">0</span></h2>
+</div>
+
+<div class="card" id="winnerBox" style="display:none;">
+  <h2>🏆 Победитель</h2>
+  <p id="winner"></p>
+
+  <h3>📊 Анализ профиля</h3>
+  <p id="stats"></p>
+</div>
+
+<script src="/socket.io/socket.io.js"></script>
+<script>
+const socket = io();
+
+function start() {
+  const word = document.getElementById('keyword').value;
+  socket.emit('start', word);
+}
+
+function stop() {
+  socket.emit('stop');
+}
+
+function pick() {
+  socket.emit('pick');
+}
+
+socket.on('participants', (count) => {
+  document.getElementById('count').innerText = count;
+});
+
+socket.on('winner', (data) => {
+  document.getElementById('winnerBox').style.display = 'block';
+  document.getElementById('winner').innerText = data.name;
+
+  const percent = data.stats.messages > 0
+    ? Math.round((data.stats.plus / data.stats.messages) * 100)
+    : 0;
+
+  document.getElementById('stats').innerText =
+    `${data.stats.messages} сообщений | ${data.stats.plus} участий | ${percent}%`;
+});
+
+// автообновление участников
+setInterval(() => {
+  socket.emit('getParticipants');
+}, 2000);
+</script>
+
+</body>
+</html>
