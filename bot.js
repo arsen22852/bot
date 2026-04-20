@@ -1,12 +1,13 @@
 const tmi = require('tmi.js');
 
 const client = new tmi.Client({
-  identity: {
-    username: 'ТВОЙ_БОТ',
-    password: 'oauth:ТВОЙ_ТОКЕН'
-  },
-  channels: ['ТВОЙ_КАНАЛ']
+    identity: {
+        username: process.env.YOUR_BOT_USERNAME,
+        password: process.env.YOUR_OAUTH_TOKEN
+    },
+    channels: [ YOUR_CHANNEL ]
 });
+
 
 let participants = new Set();
 let messages = {};
