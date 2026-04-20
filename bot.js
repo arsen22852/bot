@@ -1,15 +1,13 @@
 const tmi = require('tmi.js');
 
 const client = new tmi.Client({
+    options: { debug: true },
     identity: {
         username: process.env.YOUR_BOT_USERNAME,
         password: process.env.YOUR_OAUTH_TOKEN
     },
-    channels: [ YOUR_CHANNEL ]
+    channels: [ process.env.YOUR_CHANNEL ]
 });
-
-
-let participants = new Set();
 let messages = {};
 let plusCount = {};
 
